@@ -2,6 +2,7 @@ import os
 import argparse
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 def main():
     load_dotenv()
@@ -15,15 +16,17 @@ def main():
     prompt_parser.add_argument("user_prompt", type=str, help="User prompt")
     arguments = prompt_parser.parse_args()
 
-    model = "gemini-2.5-flash"
-    contents = arguments.user_prompt
+    messages = [types.Content(role="user", parts=[types.Part(text=arguments.user_prompt)])]
 
-    response = client.models.generate_content(model = model, contents = contents)
+    model = "gemini-2.5-flash"
+    #contents = arguments.user_prompt
+
+    response = client.models.generate_content(model = model, contents = messages)
 
     if not response:
         raise RuntimeError("we had a failed API request")
 
-    print(f"User prompt: {contents}")
+    print(f"User prompt: {messages}")
 
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
     print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
