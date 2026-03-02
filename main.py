@@ -14,6 +14,7 @@ def main():
 
     prompt_parser = argparse.ArgumentParser(description = "Tutorial Chatbot")
     prompt_parser.add_argument("user_prompt", type=str, help="User prompt")
+    prompt_parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     arguments = prompt_parser.parse_args()
 
     messages = [types.Content(role="user", parts=[types.Part(text=arguments.user_prompt)])]
@@ -26,10 +27,11 @@ def main():
     if not response:
         raise RuntimeError("we had a failed API request")
 
-    print(f"User prompt: {messages}")
+    if arguments.verbose:
+        print(f"User prompt: {messages}")
 
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+        print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+        print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
     print(f"{response.text}")
 
