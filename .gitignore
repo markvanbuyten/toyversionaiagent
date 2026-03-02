@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Environments
+.venv/
+venv/
+env/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE's
+.vscode/
+.idea/
+
+# JSON files
+game_state.jsonl
+game_events.jsonl
