@@ -5,6 +5,7 @@ from google import genai
 from google.genai import types
 from prompts import system_prompt
 from call_function import available_functions
+from functions.call_functions import call_function
 
 def main():
     load_dotenv()
@@ -36,11 +37,27 @@ def main():
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
+    function_results = []
+
     if response.candidates[0].content.parts:
         for part in response.candidates[0].content.parts:
             if part.function_call:
-                call = part.function_call
-                print(f"Calling function: {call.name}({call.args})")
+                function_call_result = call_function(part.function_call, verbose=arguments.verbose)
+                if not function_call_result.parts:
+                    raise Exception("Function call result has no parts.")
+
+                first_part = function_call_result.parts[0]
+                if first_part.function_response is None:
+                    raise Exception("Function response is missing in the result parts.")
+                
+                if first_part.function_response.response is None:
+                    raise Exception("The actual response field in FunctionResponse is None.")
+                
+                function_results.append(first_part)
+
+                if arguments.verbose:
+                    print(f"-> {first_part.function_response.response}")
+
             if part.text:
                 print(f"{response.text}")
 
