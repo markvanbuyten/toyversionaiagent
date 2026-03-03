@@ -1,4 +1,5 @@
 import sys
+from google.genai import types
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import MAX_CHARS
@@ -23,3 +24,17 @@ def get_file_content(working_directory, file_path):
         return content
     except Exception as e:
         return f"Error: {e}"
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Gets the content of a file in a specified directory relative to the working directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="File path to get the content of a file from, relative to the working directory (default is the working directory itself)",
+            ),
+        },
+    ),
+)
